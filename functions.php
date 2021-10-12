@@ -22,8 +22,6 @@ function tsm_filter_post_type_by_taxonomy() {
 }
 /**
  * Filter posts by taxonomy in admin
- * @author  Mike Hemberger
- * @link http://thestizmedia.com/custom-post-type-filter-admin-custom-taxonomy/
  */
 add_filter('parse_query', 'tsm_convert_id_to_term_in_query');
 function tsm_convert_id_to_term_in_query($query) {
@@ -35,4 +33,24 @@ function tsm_convert_id_to_term_in_query($query) {
 		$term = get_term_by('id', $q_vars[$taxonomy], $taxonomy);
 		$q_vars[$taxonomy] = $term->slug;
 	}
+}
+
+
+/**
+ * Filter product by tag in admin
+ */
+add_filter( 'woocommerce_product_filters', 'wdo_filter_by_custom_taxonomy_dashboard_products' );
+ 
+function wdo_filter_by_custom_taxonomy_dashboard_products( $output ) {
+   
+  global $wp_query;
+ 
+  $output .= wc_product_dropdown_categories( array(
+    'show_option_none' => 'Filter by product tag',
+    'taxonomy' => 'product_tag',
+    'name' => 'product_tag',
+    'selected' => isset( $wp_query->query_vars['product_tag'] ) ? $wp_query->query_vars['product_tag'] : '',
+  ) );
+   
+  return $output;
 }
